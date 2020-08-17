@@ -39,4 +39,12 @@ studentRouter.post('/register', (req, res, next) => {
     }
 });
 
+studentRouter.post('/login', (req, res, next) => {
+
+});
+
+studentRouter.get('/records', (req, res, next) => {
+
+});
+
 module.exports = studentRouter;
