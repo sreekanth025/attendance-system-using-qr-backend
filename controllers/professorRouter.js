@@ -1,6 +1,6 @@
 const professorRouter = require('express').Router(); 
 const mongoose = require('mongoose');
-const professorSchema = require('../models/professorSchema'); 
+const professorModel = require('../models/professorSchema'); 
 
 const url = 'mongodb://localhost:27017/testdb'; 
 mongoose.connect(url, { 
@@ -18,3 +18,5 @@ professorRouter.post('/register', (req, res, next) => {
 professorRouter.post('/login', (req, res, next) => {
 
 }); 
+
+module.exports = professorRouter;

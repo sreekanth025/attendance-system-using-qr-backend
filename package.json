@@ -18,6 +18,7 @@
   "homepage": "https://github.com/sreekanth025/attendance-system-using-qr-backend#readme",
   "dependencies": {
     "body-parser": "^1.19.0",
+    "cookie-parser": "^1.4.5",
     "express": "^4.17.1",
     "mongoose": "^5.10.0",
     "validator": "^13.1.1"

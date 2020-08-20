@@ -1,6 +1,6 @@
 const studentRouter = require('express').Router(); 
 const mongoose = require('mongoose');
-const studentSchema = require('../models/studentSchema'); 
+const studentModel = require('../models/studentSchema'); 
 
 const url = 'mongodb://localhost:27017/testdb'; 
 mongoose.connect(url, { 
@@ -18,7 +18,7 @@ studentRouter.post('/register', (req, res, next) => {
     */
 
     try {
-        let student = new studentSchema({
+        let student = new studentModel({
             name: req.body.name, 
             email: req.body.email, 
             rollNo: req.body.rollNo, 
@@ -39,12 +39,49 @@ studentRouter.post('/register', (req, res, next) => {
     }
 });
 
-studentRouter.post('/login', (req, res, next) => {
+studentRouter.post('/login', async (req, res, next) => {
 
+    try {
+        let user = {
+            rollNo: req.body.rollNo
+        }        
+
+        let doc; 
+        let userExist = true;
+        await studentModel.find(user, (err, docs) => {
+            // console.log(docs);
+            if(docs.length == 0) {
+                userExist = false;
+                res.status(401).send("User doesn't exist.");
+
+            }
+
+            if(userExist) doc = docs[0];
+        }); 
+
+        if(userExist && req.body.password == doc.password) {
+            res.cookie("asqr-user", user); 
+            res.status(200).send("Successfully logged-In"); 
+        }
+        else if(userExist) res.status(401).send("Login Failed");
+    }
+    catch(err) {
+        next(err); 
+    }
 });
 
 studentRouter.get('/records', (req, res, next) => {
-
+    try {
+        let user = req.cookies['asqr-user']
+        if(!user) res.send("Please login"); 
+        
+        if(user) {
+            console.log(user.rollNo);
+        }
+    }
+    catch(err) {
+        next(err); 
+    }
 });
 
 module.exports = studentRouter;
