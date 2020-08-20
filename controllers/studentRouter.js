@@ -53,7 +53,6 @@ studentRouter.post('/login', async (req, res, next) => {
             if(docs.length == 0) {
                 userExist = false;
                 res.status(401).send("User doesn't exist.");
-
             }
 
             if(userExist) doc = docs[0];
@@ -70,13 +69,26 @@ studentRouter.post('/login', async (req, res, next) => {
     }
 });
 
-studentRouter.get('/records', (req, res, next) => {
+studentRouter.get('/records', async (req, res, next) => {
     try {
         let user = req.cookies['asqr-user']
         if(!user) res.send("Please login"); 
         
         if(user) {
-            console.log(user.rollNo);
+            // console.log(user);
+
+            let doc; 
+            await studentModel.find(user, (err, docs) => {
+                if(docs.length == 0) {
+                    res.status(401).send("User doesn't exist.");
+                }
+    
+                doc = docs[0];
+            });
+
+            // console.log(doc);
+            let records = doc.records;
+            res.status(200).send(records);
         }
     }
     catch(err) {
