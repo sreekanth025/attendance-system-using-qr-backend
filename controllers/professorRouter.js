@@ -133,4 +133,38 @@ professorRouter.post('/newLecture', async (req, res, next) => {
     }
 });
 
+professorRouter.post('/attendance', async (req, res, next) => {
+    try {
+        let lecture = req.cookies['asqr-lecture'];
+        let student = {
+            rollNo: req.body.rollNo
+        }
+
+        let subDoc = {
+            "email": lecture.email,
+            "records.subjectName": lecture.subjectName, 
+            "records.date": lecture.date
+        }
+
+        let changes = {
+            $addToSet: {"records.$.attendees": student.rollNo}
+        }
+        
+        await professorModel.updateOne(subDoc, changes, (err, result) => {
+            if(err) {
+                console.log(err); 
+                res.send("Some Problem occurred");
+            }
+            else {
+                // console.log(result);
+                res.send("Succesfully attended the lecture");
+            }
+        }); 
+        
+    }
+    catch(err) {
+        next(err);
+    }
+});
+
 module.exports = professorRouter;
