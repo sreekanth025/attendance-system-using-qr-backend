@@ -30,7 +30,7 @@ studentRouter.post('/register', (req, res, next) => {
             if(err) console.log(err);
             else {
                 console.log('Student saved');
-                res.status(201).end()
+                res.status(201).send('Student saved0');
             }
         })
     }
