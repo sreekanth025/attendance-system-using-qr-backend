@@ -92,4 +92,45 @@ professorRouter.get('/records', async (req, res, next) => {
     }
 });
 
+professorRouter.post('/newLecture', async (req, res, next) => {
+    try {
+
+        let user = {
+            email: req.cookies['asqr-user'].email
+        }
+
+        var datetime = new Date();
+        let newLecture = {
+            subjectName: req.body.subjectName, 
+            date: datetime,
+            attendees: []
+        }
+
+        let changes = {
+            $addToSet: {records: newLecture}
+        }
+
+        let lectureCookie = {
+            email: user.email, 
+            subjectName: newLecture.subjectName,
+            date: newLecture.date
+        }
+
+        await professorModel.updateOne(user, changes, (err, result) => {
+            if(err) {
+                console.log(err); 
+                res.send("Some Problem occurred");
+            }
+            else {
+                // console.log(result);
+                res.cookie("asqr-lecture", lectureCookie);
+                res.send("class started");
+            }
+        });
+    }
+    catch(err) {
+        next(err); 
+    }
+});
+
 module.exports = professorRouter;

@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema; 
 
-const studentSchema = require('./studentSchema').schema; 
 const attendeeSchema = new Schema({
     
     subjectName: {
@@ -15,7 +14,7 @@ const attendeeSchema = new Schema({
     },
 
     attendees: {
-        type:[studentSchema.rollNo],
+        type:[String],
         required: false
     }
 });
