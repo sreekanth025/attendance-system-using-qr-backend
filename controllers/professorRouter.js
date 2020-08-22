@@ -74,7 +74,7 @@ professorRouter.get('/records', async (req, res, next) => {
         
         if(user) {
             // console.log(user);
-            await professorModel.find({ email : user },(err,result)=>{
+            await professorModel.find({ email : user.email },(err,result)=>{
 
                 if(err)
                     console.log(err);
@@ -89,6 +89,41 @@ professorRouter.get('/records', async (req, res, next) => {
     }
     catch(err) {
         next(err); 
+    }
+});
+
+professorRouter.post('/add_subject', async (req, res, next) => {
+
+    try{      
+        let user = req.cookies['asqr-user']
+        if(!user) res.send("Please login"); 
+        
+        if(user) {
+            
+            await professorModel.updateOne(
+
+                { email : user.email },
+                { $addToSet : { subjects : req.body.subject } },
+                (err,result)=>{
+                  
+                if(err)
+                    console.log(err);
+                
+                else if(result.n==0)
+                    res.status(401).send("login failed");
+                    
+                else if(result.nModified==0)
+                    res.status(200).send('Subject already exists!');  
+
+                else
+                    res.status(200).send('Added successfully!');
+                    
+                });
+        }
+    }
+
+    catch(err){
+        next(err);
     }
 });
 
